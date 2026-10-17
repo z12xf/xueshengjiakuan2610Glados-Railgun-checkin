@@ -24,7 +24,7 @@ jobs:
       matrix:
         python-version: [3.13]
 
-    # 这里加入全局环境变量，强制后续所有第三方 actions 兼容 Node.js 24 运行环境
+    # 强制后续所有第三方 actions 兼容 Node.js 24 运行环境
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
@@ -44,14 +44,17 @@ jobs:
         pip install requests
         pip install pypushdeer
 
-    # 执行 签到脚本
+    # 执行 签到脚本（已启用积分满100自动兑换）
     - name: Running checkin
       run: |
         python checkin.py
       env:
         PUSHDEER_SENDKEY: ${{ secrets.PUSHDEER_SENDKEY }}
         GLADOS_COOKIES: ${{ secrets.GLADOS_COOKIES }}
-        GLADOS_EXCHANGE_PLAN: ${{ secrets.GLADOS_EXCHANGE_PLAN }}
+        # 积分满100自动兑换10天会员（plan100）
+        # 可选值：plan100 / plan200 / plan500
+        # 不需要自动兑换时把下面这行改成 none 或直接删除
+        GLADOS_EXCHANGE_PLAN: plan100
         GLADOS_VERBOSE: ${{ secrets.GLADOS_VERBOSE }}
 
     - name: Keep alive
